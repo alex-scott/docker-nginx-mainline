@@ -68,9 +68,14 @@ RUN set -x \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Add custom config directive to httpd server
+# alex-scott changes - include only /etc/httpd-custom.d/*.HTTP.conf; here
 RUN set -x \
-	&& sed -i'' 's|^\s*include.*conf\.d/.*|    include /etc/httpd-custom.d/*.conf;\n    include /etc/httpd/conf.d/*.conf;\n    include /etc/httpd/vhost.d/*.conf;\n|g' /etc/nginx/nginx.conf \
+	&& sed -i'' 's|^\s*include.*conf\.d/.*|    include /etc/httpd-custom.d/*.http.conf;\n    include /etc/httpd/conf.d/*.conf;\n    include /etc/httpd/vhost.d/*.conf;\n|g' /etc/nginx/nginx.conf \
 	&& echo "daemon off;" >> /etc/nginx/nginx.conf
+
+# alex-scott changes - add global include instead of include into http {} 
+RUN set -x \
+	&& sed -i '1s;^;include /etc/httpd-custom.d/*.global.conf\;\n;' /etc/nginx/nginx.conf 
 
 # create directories
 RUN set -x \
@@ -91,6 +96,7 @@ COPY ./data/vhost-gen/mass.yml /etc/vhost-gen/mass.yml
 COPY ./data/create-vhost.sh /usr/local/bin/create-vhost.sh
 COPY ./data/docker-entrypoint.d /docker-entrypoint.d
 COPY ./data/docker-entrypoint.sh /docker-entrypoint.sh
+
 
 
 ###
