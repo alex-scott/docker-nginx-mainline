@@ -77,6 +77,9 @@ RUN set -x \
 RUN set -x \
 	&& sed -i '1s;^;include /etc/httpd-custom.d/*.global.conf\;\n;' /etc/nginx/nginx.conf 
 
+# alex-scott install debugging utils
+RUN apt-get update && apt-get install -y procps vim mc
+
 # create directories
 RUN set -x \
 	&& mkdir -p /etc/httpd-custom.d \
